@@ -1,10 +1,11 @@
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 ARG GID=1000
 ARG UID=1000
 
-RUN addgroup --gid $GID node \
-    && adduser --gid $GID --uid $UID --disabled-password --gecos node node
+RUN getent group
+RUN addgroup --gid $GID node
+RUN adduser --gid $GID --uid $UID --disabled-password --gecos node node
 
 RUN apt-get update \
     && apt-get dist-upgrade -y \
@@ -13,15 +14,14 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install -y \
          git \
-	 g++-9 \
+	 g++-12 \
          curl \
          make \
          python3 \
 	 python3-distutils \
          ccache \
-         xz-utils
-
-RUN curl https://ci.adoptium.net/userContent/riscv/riscv_toolchain_linux64.tar.xz | tar xJf - -C /opt
+         xz-utils \
+         g++-12-riscv64-linux-gnu
 
 COPY --chown=node:node run.sh /home/node/run.sh
 

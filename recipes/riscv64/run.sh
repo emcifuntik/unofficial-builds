@@ -10,17 +10,17 @@ datestring="$4"
 commit="$5"
 fullversion="$6"
 source_url="$7"
-config_flags="--openssl-no-asm"
+config_flags="--fully-static --without-ssl"
 
 cd /home/node
 
 tar -xf node.tar.xz
 cd "node-${fullversion}"
 
-export CC_host="ccache gcc-9"
-export CXX_host="ccache g++-9"
-export CC="ccache /opt/riscv_toolchain_linux/bin/riscv64-unknown-linux-gnu-gcc"
-export CXX="ccache /opt/riscv_toolchain_linux/bin/riscv64-unknown-linux-gnu-g++"
+export CC_host="ccache gcc-12"
+export CXX_host="ccache g++-12"
+export CC="ccache riscv64-linux-gnu-gcc-12"
+export CXX="ccache riscv64-linux-gnu-g++-12"
 
 make -j$(getconf _NPROCESSORS_ONLN) binary V= \
   DESTCPU="riscv64" \
@@ -31,8 +31,8 @@ make -j$(getconf _NPROCESSORS_ONLN) binary V= \
   DATESTRING="$datestring" \
   COMMIT="$commit" \
   RELEASE_URLBASE="$release_urlbase" \
-  CONFIG_FLAGS="$config_flags"
-
+  CONFIG_FLAGS="$config_flags" \
+  BUILD_INTL_FLAGS=--with-intl=none
 # If removal of ICU is desired, add "BUILD_INTL_FLAGS=--with-intl=none" above
 
 mv node-*.tar.?z /out/
